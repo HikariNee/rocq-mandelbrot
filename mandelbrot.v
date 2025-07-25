@@ -21,7 +21,7 @@ Section Aux.
   Definition C : Type := bigQ * bigQ.
   Definition Width : nat := 80.
   Definition Height : nat := 40.
-  Definition Iterations : nat := 100.
+  Definition Iterations : nat := 5.
 
   Definition notb (alpha : bool) : bool :=
     match alpha with
@@ -130,12 +130,11 @@ Section Mandelbrot.
     if (BigQ.eqb sum' 0) then 0 else llength - sum'.
 
   Open Scope string_scope.
-  Function buildStr (pts : list C) (acc : list string) {measure List.length pts} :=
+  Function buildStr (pts : list C) (acc : string) {measure List.length pts} :=
     match pts with
     | nil => acc
-    | _ =>   let charstr := map (fun x => toChar (escapeCount (nApplMandelbrot x (0,0) Iterations))) (firstn Width pts) in
-            let str := List.app charstr (cons "\n" nil) in
-            buildStr (skipn Width pts) (acc ++ str)
+    | _ =>   let charstr := append (concat "" (map (fun x => toChar (escapeCount (nApplMandelbrot x (0,0) Iterations))) (firstn Width pts))) (String (Ascii.ascii_of_N 10) EmptyString) in
+            buildStr (skipn Width pts) (acc ++ charstr)
     end.
   Proof.
     intros * S p ptse H.
@@ -143,6 +142,10 @@ Section Mandelbrot.
     rewrite e.
     simpl.
     lia.
-  Qed.
+  Defined.
   Close Scope string_scope.
 End Mandelbrot.
+
+Open Scope string_scope.
+(* Compute map (fun x => toChar (escapeCount (nApplMandelbrot x (0,0) Iterations))) (firstn Width points). *)
+Compute ((buildStr points "")).
