@@ -53,10 +53,8 @@ Section Aux.
 
   Definition scale (coord : C) : C :=
     (* 2 + 1 = 3, total X units for the mandelbrot, 2 for the Y axis *)
-    let xunits' := 3 in
-    let yunits' := 2 in
-    let scaleX := (xunits' / inject_nat Width) in
-    let scaleY := (yunits' / inject_nat Height) in
+    let scaleX := 3 / inject_nat Width in
+    let scaleY := 2 / inject_nat Height in
     let lowerX := -2 in
     let lowerY := -12 # 10 in
     ((fst coord * scaleX) + lowerX, (snd coord * scaleY) + lowerY).
@@ -122,11 +120,8 @@ Section Mandelbrot.
 
   Close Scope C_scope.
   Definition escapeCount (l0 : Vector C) : bigQ :=
-    let l' := map (fun x => if (notb (lebQ (CModSq x) 4)) then 1 else 0)
-               (val C l0)
-    in
     let llength := size C l0 in
-    let sum' := fold_left (fun x y => x + y) l' 0 in
+    let sum' := fold_left (fun acc x => if (lebQ (CModSq x) 4) then acc else acc + 1) (val C l0) 0 in
     if (BigQ.eqb sum' 0) then 0 else llength - sum'.
 
   Open Scope string_scope.
