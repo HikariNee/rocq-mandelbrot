@@ -1,0 +1,3 @@
+* Rocq-mandelbrot
+
+An mandelbrot set grapher using strings, it's not performant at all and anything above >= 5 iterations takes hours to compile. The Extracted OCaml version is not any better either.

@@ -6,6 +6,10 @@ From Stdlib Require Import Arith.
 From Stdlib Require Import Psatz.
 From Stdlib Require Import Recdef.
 From Stdlib Require Import FunInd.
+From Stdlib Require Import Extraction.
+From Stdlib Require ExtrOCamlInt63.
+From Stdlib Require ExtrOcamlString.
+From Stdlib Require ExtrOcamlNatInt.
 From mathcomp Require Import path.
 From Bignums Require Import BigZ.
 From Bignums Require Import BigQ.
@@ -21,7 +25,7 @@ Section Aux.
   Definition C : Type := bigQ * bigQ.
   Definition Width : nat := 80.
   Definition Height : nat := 40.
-  Definition Iterations : nat := 5.
+  Definition Iterations : nat := 20.
 
   Definition notb (alpha : bool) : bool :=
     match alpha with
@@ -141,6 +145,11 @@ Section Mandelbrot.
   Close Scope string_scope.
 End Mandelbrot.
 
+Extraction Language OCaml.
+
+Definition result :=
+  buildStr points "".
+
+Extraction "mandelbrot.ml" result.
 Open Scope string_scope.
-(* Compute map (fun x => toChar (escapeCount (nApplMandelbrot x (0,0) Iterations))) (firstn Width points). *)
-Compute ((buildStr points "")).
+(* Compute ((buildStr points "")). *)
